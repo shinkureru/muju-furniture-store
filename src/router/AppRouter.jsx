@@ -1,4 +1,6 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
+
 import App from "../App.jsx";
 import HomePage from "../pages/HomePage.jsx";
 import ShopPage from "../pages/ShopPage.jsx";
@@ -14,7 +16,7 @@ import ProductDetailPage from "../pages/ProductDetailPage.jsx";
 import CheckoutPage from "../pages/CheckoutPage";
 import OrderCompletePage from "../pages/OrderCompletePage.jsx";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <App />,
@@ -64,7 +66,7 @@ const router = createBrowserRouter([
         element: <CartPage />,
       },
       {
-        path: "/checkout",
+        path: "checkout",
         element: <CheckoutPage />,
       },
       {
