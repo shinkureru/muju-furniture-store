@@ -1,0 +1,148 @@
+@use "../abstracts/variables" as *;
+
+/* =========================================================
+  電腦版｜全站基礎設定
+========================================================= */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+#root {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans TC", sans-serif;
+  color: $text-dark;
+  background: #fff;
+}
+
+p,
+span,
+strong,
+small,
+a,
+td,
+th {
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  width: 100%;
+
+  // 圖片也不能被拖曳
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.site-container {
+  width: min(100% - #{$container-padding * 2}, #{$container-max});
+  margin: 0 auto;
+}
+
+.section-padding {
+  padding: 56px 0;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 38px;
+
+  h2 {
+    margin: 0;
+    color: $text-dark;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+
+  p {
+    max-width: 620px;
+    margin: 10px auto 0;
+    color: #666;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+}
+
+.btn-primary-custom {
+  min-width: 170px;
+  padding: 16px 32px;
+  border: 1px solid $primary;
+  border-radius: 0;
+  background: $primary;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  transition: 0.2s;
+
+  &:hover {
+    background: $primary-dark;
+    border-color: $primary-dark;
+    color: #fff;
+  }
+}
+
+.btn-outline-custom {
+  min-width: 245px;
+  padding: 13px 32px;
+  border: 1px solid $primary;
+  border-radius: 0;
+  background: #fff;
+  color: $primary;
+  font-size: 14px;
+  font-weight: 700;
+  transition: 0.2s;
+
+  &:hover {
+    background: $primary;
+    color: #fff;
+  }
+}
+
+/* 禁止文字被圈選：適合用在按鈕、導覽列、裝飾型區塊 */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.table-responsive {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+} // 表格真的太寬，就讓表格自己的容器水平滑，不要讓整個頁面水平滑

@@ -1,0 +1,26 @@
+/* base */
+@use "./base/base"; // 載入全站基本設定
+
+/* components */
+@use "./components/loading";
+@use "./components/header";
+@use "./components/footer";
+@use "./components/modal";
+@use "./components/toast";
+@use "./components/pagination";
+@use "./components/product-card";
+@use "./components/skeleton";
+
+/* pages */
+@use "./pages/home";
+@use "./pages/shop";
+@use "./pages/about";
+@use "./pages/contact";
+@use "./pages/member";
+@use "./pages/admin";
+
+/* responsive */
+@use "./responsive/tablet";
+@use "./responsive/mobile";
+// 響應式樣式最後載入。
+// 因為它要覆蓋前面桌機版的設定，所以放最後。
