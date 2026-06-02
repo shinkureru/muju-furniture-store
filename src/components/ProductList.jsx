@@ -1,81 +1,46 @@
+import { useEffect, useMemo, useState } from "react";
 import { BsHeart } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { getProducts } from "../api/productApi"; // 抓 API 所有商品
 
-const products = [
-  {
-    name: "Syltherine",
-    desc: "質感單椅",
-    price: "NT$ 2,500",
-    oldPrice: "NT$ 3,500",
-    badge: "-30%",
-    image:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    name: "Leviosa",
-    desc: "輕盈餐椅",
-    price: "NT$ 2,500",
-    oldPrice: "",
-    image:
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=600&auto=format&fit=crop",
-    active: true,
-  },
-  {
-    name: "Lolito",
-    desc: "奢華雙人沙發",
-    price: "NT$ 7,000",
-    oldPrice: "NT$ 14,000",
-    badge: "-50%",
-    image:
-      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    name: "Respira",
-    desc: "戶外桌椅組",
-    price: "NT$ 500",
-    oldPrice: "",
-    badge: "新品",
-    image:
-      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    name: "Grifo",
-    desc: "柔光夜燈",
-    price: "NT$ 1,500",
-    oldPrice: "",
-    image:
-      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    name: "Muggo",
-    desc: "日常馬克杯",
-    price: "NT$ 150",
-    oldPrice: "",
-    badge: "新品",
-    image:
-      "https://images.unsplash.com/photo-1618220179428-22790b461013?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    name: "Pingky",
-    desc: "柔感寢具組",
-    price: "NT$ 7,000",
-    oldPrice: "NT$ 14,000",
-    badge: "-50%",
-    image:
-      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    name: "Potty",
-    desc: "極簡植栽盆",
-    price: "NT$ 500",
-    oldPrice: "",
-    badge: "新品",
-    image:
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=600&auto=format&fit=crop",
-  },
-];
+const getRandomProducts = (products, count = 8) => {
+  // 隨機取 8 筆
+  return [...products].sort(() => Math.random() - 0.5).slice(0, count);
+};
 
-function ProductList() {
+const formatPrice = (price = 0) => {
+  return price.toLocaleString();
+};
+
+const ProductList = () => {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage("");
+
+        const data = await getProducts();
+
+        setProducts(data);
+      } catch (error) {
+        console.error("首頁人氣商品載入失敗：", error);
+        setErrorMessage("商品載入失敗，請稍後再試");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const randomProducts = useMemo(() => {
+    return getRandomProducts(products, 8);
+  }, [products]);
+
   return (
     <section className="product-section section-padding pt-2">
       <div className="site-container">
@@ -84,47 +49,80 @@ function ProductList() {
           <p>精選兼具美感與實用性的居家單品，讓每個角落都更有溫度。</p>
         </div>
 
-        <div className="row g-4">
-          {products.map((product) => (
-            <div className="col-6 col-lg-3" key={product.name}>
-              <article
-                className={`product-card ${product.active ? "is-active" : ""}`}
-              >
-                <div className="product-img-wrap">
-                  <img src={product.image} alt={product.name} />
+        {isLoading && (
+          <div className="text-center py-5">
+            <div
+              className="spinner-border mb-3"
+              role="status"
+              aria-hidden="true"
+            />
+            <p className="text-muted mb-0">人氣商品載入中...</p>
+          </div>
+        )}
 
-                  {product.badge && (
-                    <span
-                      className={`badge-tag ${product.badge === "新品" ? "new" : ""}`}
-                    >
-                      {product.badge}
-                    </span>
-                  )}
+        {!isLoading && errorMessage && (
+          <div className="text-center py-5">
+            <p className="text-muted mb-0">{errorMessage}</p>
+          </div>
+        )}
 
-                  <div className="product-overlay no-select">
-                    <button className="add-cart-btn">加入購物車</button>
-                    <div className="overlay-actions">
-                      <span>分享</span>
-                      <span>比較</span>
-                      <span>
-                        <BsHeart /> 收藏
-                      </span>
+        {!isLoading && !errorMessage && (
+          <div className="row g-4">
+            {randomProducts.map((product) => (
+              <div className="col-6 col-lg-3" key={product.id}>
+                <article className="product-card">
+                  <div className="product-img-wrap">
+                    <Link to={`/shop/${product.id}`}>
+                      <img src={product.imageUrl} alt={product.title} />
+                    </Link>
+
+                    {product.is_enabled && (
+                      <span className="badge-tag new">熱銷</span>
+                    )}
+
+                    <div className="product-overlay no-select">
+                      <Link
+                        to={`/shop/${product.id}`}
+                        className="add-cart-btn text-decoration-none"
+                      >
+                        查看商品
+                      </Link>
+
+                      <div className="overlay-actions">
+                        <span>分享</span>
+                        <span>比較</span>
+                        <span>
+                          <BsHeart /> 收藏
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="product-body">
-                  <h3>{product.name}</h3>
-                  <p>{product.desc}</p>
-                  <div className="price-row">
-                    <strong>{product.price}</strong>
-                    {product.oldPrice && <del>{product.oldPrice}</del>}
+                  <div className="product-body">
+                    <h3>
+                      <Link
+                        to={`/shop/${product.id}`}
+                        className="text-reset text-decoration-none"
+                      >
+                        {product.title}
+                      </Link>
+                    </h3>
+
+                    <p>{product.category}</p>
+
+                    <div className="price-row">
+                      <strong>NT$ {formatPrice(product.price)}</strong>
+
+                      {product.origin_price > product.price && (
+                        <del>NT$ {formatPrice(product.origin_price)}</del>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </article>
-            </div>
-          ))}
-        </div>
+                </article>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="text-center mt-5">
           <Link to="/shop" className="btn btn-outline-custom">
@@ -134,6 +132,6 @@ function ProductList() {
       </div>
     </section>
   );
-}
+};
 
 export default ProductList;

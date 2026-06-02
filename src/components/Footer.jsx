@@ -1,9 +1,38 @@
+import { useState } from "react";
+
 import { Link } from "react-router-dom";
 // 站內頁面切換要用 Link，不要用 <a href="">。
 // Link → React Router 控制頁面切換，不重新整理
 // <a href=""> → 瀏覽器重新載入整個頁面
 
-function Footer() {
+const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [subscribeMessage, setSubscribeMessage] = useState("");
+  const [subscribeStatus, setSubscribeStatus] = useState("");
+
+  const handleSubscribe = (event) => {
+    event.preventDefault();
+
+    const emailValue = email.trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailValue) {
+      setSubscribeStatus("error");
+      setSubscribeMessage("請先輸入 Email");
+      return;
+    }
+
+    if (!emailPattern.test(emailValue)) {
+      setSubscribeStatus("error");
+      setSubscribeMessage("請輸入正確的 Email 格式");
+      return;
+    }
+
+    setSubscribeStatus("success");
+    setSubscribeMessage("訂閱成功！我們會將最新消息寄送到您的信箱。");
+    setEmail("");
+  };
+
   return (
     <footer className="site-footer">
       <div className="site-container">
@@ -69,7 +98,7 @@ function Footer() {
                 <Link to="/member/orders">訂單查詢</Link>
               </li>
               <li>
-                <Link to="/shop">收藏清單</Link>
+                <Link to="/member">收藏清單</Link>
               </li>
               <li>
                 <Link to="/contact">客服支援</Link>
@@ -84,23 +113,37 @@ function Footer() {
               接收新品上市、限時優惠與居家佈置靈感。
             </p>
 
-            <form
-              className="footer-subscribe mt-4"
-              onSubmit={(event) => event.preventDefault()}
-              // 表單送出時阻止瀏覽器預設行為
-            >
+            <form className="footer-subscribe mt-4" onSubmit={handleSubscribe}>
               <div className="input-group">
                 <input
                   type="email"
                   className="form-control"
                   placeholder="請輸入 Email"
                   aria-label="請輸入 Email"
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    setSubscribeMessage("");
+                    setSubscribeStatus("");
+                  }}
                 />
 
                 <button className="btn btn-dark" type="submit">
                   訂閱
                 </button>
               </div>
+
+              {subscribeMessage && (
+                <p
+                  className={`footer-subscribe__message mt-2 mb-0 ${
+                    subscribeStatus === "success"
+                      ? "text-success"
+                      : "text-danger"
+                  }`}
+                >
+                  {subscribeMessage}
+                </p>
+              )}
             </form>
 
             <div className="footer-social mt-4">
@@ -130,6 +173,6 @@ function Footer() {
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;

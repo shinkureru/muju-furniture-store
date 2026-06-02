@@ -7,6 +7,7 @@ import ShopPage from "../pages/ShopPage.jsx";
 import AboutPage from "../pages/AboutPage.jsx";
 import ContactPage from "../pages/ContactPage.jsx";
 import MemberPage from "../pages/MemberPage.jsx";
+import MemberOrdersPage from "../pages/MemberOrdersPage.jsx";
 import CartPage from "../pages/CartPage";
 import AdminPage from "../pages/AdminPage.jsx";
 import AdminProductsPage from "../pages/AdminProductsPage.jsx";
@@ -40,6 +41,10 @@ const router = createHashRouter([
       {
         path: "member",
         element: <MemberPage />,
+      },
+      {
+        path: "member/orders",
+        element: <MemberOrdersPage />,
       },
       {
         path: "admin",
